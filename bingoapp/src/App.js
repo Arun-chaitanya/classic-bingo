@@ -4,53 +4,29 @@ import Confetti from "react-confetti";
 import db from './firebase';
 
 function App() {
-  const [phrases, setPhrases] = useState([
-    {phrase: "child noises in the background", selected:false},
-    {phrase: "Hello, hello?", selected:false},
-    {phrase: "I need to jump in another call", selected:false},
-    {phrase: "Can everyone go on mute", selected:false},
-    {phrase: "Could you please get closer to the mic", selected:false},
-    {phrase: "(Load painful echo/ feedback)", selected:false},
-    {phrase: "Next slide please", selected:false},
-    {phrase: "Can we take this offline?", selected:false},
-    {phrase: "Is Sasha on call?", selected:false},
-    {phrase: "Could you share this slides afterwards", selected:false},
-    {phrase: "Grant me presenter rights", selected:false},
-    {phrase: "Can we email this online", selected:false},
-    {phrase: "CONF CALL BINGO", selected:true},
-    {phrase: "Sorry, I had problems logging in", selected:false},
-    {phrase: "Animal noises in the background", selected:false},
-    {phrase: "Sorry, I didn't find the conference id", selected:false},
-    {phrase: "I was having connection issues", selected:false},
-    {phrase: "I'll have to get back to you", selected:false},
-    {phrase: "who just joined", selected:false},
-    {phrase: "Sorry, something messed my calender", selected:false},
-    {phrase: "Do you see my screen", selected:false},
-    {phrase: "Let's wait for god", selected:false},
-    {phrase: "You will send the minutes?", selected:false},
-    {phrase: "Sorry, I was on mute", selected:false},
-    {phrase: "Can you repeat, please", selected:false},
-  ])
-  const [result, setResult] = useState({
-    r1: 0,
-    r2: 0,
-    r3: 1,
-    r4: 0,
-    r5: 0,
-    c1: 0,
-    c2: 0,
-    c3: 1,
-    c4: 0,
-    c5: 0,
-    d1: 1,
-    d2: 1
-  })
+  const [phrases, setPhrases] = useState([])
+  const [result, setResult] = useState({})
   const [show, setShow] = useState(false);
+
+  useEffect(()=>{
+    db.collection('show').onSnapshot(snapshot =>{
+      setShow(snapshot.docs[0].data().show)
+    })
+    db.collection('checkedStatus').onSnapshot(snapshot =>{
+      console.log(snapshot.docs[0].data().result)
+      setResult(snapshot.docs[0].data().result)
+    })
+    db.collection('phrases').onSnapshot(snapshot =>{
+      setPhrases(snapshot.docs[0].data().phrases)
+    })
+  },[])
 
   useEffect(()=>{
     if(show){
       setTimeout(()=>{
-        setShow(false)
+        db.collection("show").doc('1').update({
+          show: false
+        });
       }, 3000)
     }
   },[show])
@@ -66,7 +42,9 @@ function App() {
     const col = "c" + colNumber
     if(index!==12){
       phrasesList[index].selected = !phrasesList[index].selected
-      setPhrases(phrasesList)
+      db.collection("phrases").doc('1').update({
+        phrases: phrasesList
+      });
       if(phrasesList[index].selected){
         resultObj[row] += 1
         resultObj[col] += 1
@@ -90,9 +68,13 @@ function App() {
         }
       }
       if(resultObj[row] === 5 || resultObj[col] === 5 || (isDiagonal && (resultObj["d1"] === 5 || resultObj["d2"] === 5))){
-        setShow(true)
+        db.collection("show").doc('1').update({
+          show: true
+        });
       }
-      setResult(resultObj)
+      db.collection("checkedStatus").doc('1').update({
+        result: resultObj
+      });
     }
   }
 
@@ -103,8 +85,12 @@ function App() {
         item.selected = false
       }
     })
-    setPhrases(phrasesList)
-    setResult({r1: 0, r2: 0, r3: 1, r4: 0, r5: 0, c1: 0, c2: 0, c3: 1, c4: 0, c5: 0, d1: 1, d2: 1})
+    db.collection("phrases").doc('1').update({
+      phrases: phrasesList
+    });
+    db.collection("checkedStatus").doc('1').update({
+      result: {r1: 0, r2: 0, r3: 1, r4: 0, r5: 0, c1: 0, c2: 0, c3: 1, c4: 0, c5: 0, d1: 1, d2: 1}
+    });
   }
 
   return (
