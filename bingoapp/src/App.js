@@ -9,15 +9,14 @@ function App() {
   const [show, setShow] = useState(false);
 
   useEffect(()=>{
+    db.collection('phrases').onSnapshot(snapshot =>{
+      setPhrases(snapshot.docs[0].data().phrases)
+    })
     db.collection('show').onSnapshot(snapshot =>{
       setShow(snapshot.docs[0].data().show)
     })
     db.collection('checkedStatus').onSnapshot(snapshot =>{
-      console.log(snapshot.docs[0].data().result)
       setResult(snapshot.docs[0].data().result)
-    })
-    db.collection('phrases').onSnapshot(snapshot =>{
-      setPhrases(snapshot.docs[0].data().phrases)
     })
   },[])
 
