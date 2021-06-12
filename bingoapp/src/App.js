@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import Confetti from "react-confetti";
+import db from './firebase';
 
 function App() {
   const [phrases, setPhrases] = useState([

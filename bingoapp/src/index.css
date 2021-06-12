@@ -14,6 +14,7 @@ code {
 
 *,*:focus,*:hover{
   outline:none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body{
@@ -94,11 +95,14 @@ h1{
   max-height: 16vh;
   padding: 10px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.card:hover{
-  box-shadow: inset -4px -4px 6px rgba(255, 255, 255, 0.1),
-              inset 4px 4px 6px rgba(0, 0, 0, 0.8);
+@media screen and (min-width: 600px) {
+  .card:hover{
+    box-shadow: inset -4px -4px 6px rgba(255, 255, 255, 0.1),
+                inset 4px 4px 6px rgba(0, 0, 0, 0.8);
+  }
 }
 
 .card-selected {
@@ -129,6 +133,10 @@ button {
   padding: 10px 30px;
   border: 0px;
   cursor: pointer;
+  -webkit-user-select: none; /* Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 @media screen and (max-width: 600px) {
