@@ -35,7 +35,8 @@ function App() {
     const resultObj = {...result}
     const rowNumber = (Math.ceil((index+1)/5))
     const colNumber = ((index+1)%5) ? ((index+1)%5) : 5
-    let isDiagonal = false
+    let isDiagonal1 = false
+    let isDiagonal2 = false
 
     const row = "r" + rowNumber
     const col = "c" + colNumber
@@ -49,11 +50,11 @@ function App() {
         resultObj[col] += 1
         if((rowNumber ===  colNumber)){
           resultObj["d1"]+=1
-          isDiagonal = true
+          isDiagonal1 = true
         }
         if((rowNumber + colNumber === 6)){
           resultObj["d2"]+=1
-          isDiagonal = true
+          isDiagonal2 = true
         }
       }
       else{
@@ -66,7 +67,7 @@ function App() {
           resultObj["d2"]-=1
         }
       }
-      if(resultObj[row] === 5 || resultObj[col] === 5 || (isDiagonal && (resultObj["d1"] === 5 || resultObj["d2"] === 5))){
+      if(resultObj[row] === 5 || resultObj[col] === 5 || (isDiagonal1 && (resultObj["d1"] === 5)) || (isDiagonal2 && (resultObj["d2"] === 5))){
         db.collection("show").doc('1').update({
           show: true
         });
