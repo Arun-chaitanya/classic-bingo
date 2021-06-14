@@ -85,8 +85,19 @@ function App() {
         item.selected = false
       }
     })
+    let arrayToBeShuffled = phrasesList.slice(0,12).concat(phrasesList.slice(13))
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    shuffleArray(arrayToBeShuffled)
+    let shuffledFinalArray = arrayToBeShuffled.slice(0,12).concat(phrasesList[12],arrayToBeShuffled.slice(12))
+
     db.collection("phrases").doc('1').update({
-      phrases: phrasesList
+      phrases: shuffledFinalArray
     });
     db.collection("checkedStatus").doc('1').update({
       result: {r1: 0, r2: 0, r3: 1, r4: 0, r5: 0, c1: 0, c2: 0, c3: 1, c4: 0, c5: 0, d1: 1, d2: 1}
